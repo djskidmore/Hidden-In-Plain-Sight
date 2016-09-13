@@ -10,7 +10,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".SplashScreen"
-            android:label="HIPSSplash">
+            android:label="H.I.P.S.">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

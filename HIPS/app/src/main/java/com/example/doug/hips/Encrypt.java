@@ -55,7 +55,7 @@ public class Encrypt extends AppCompatActivity {
 
         //stores the convertd string into Extra Message
         // to be used by any other activity
-        intent.putExtra(EXTRA_MESSAGE, message);
+        intent.putExtra(EXTRA_MESSAGE, message.toString());
         //startActivity(intent);
         encrypted_MSG.setText(message);
         view.invalidate();
@@ -65,15 +65,22 @@ public class Encrypt extends AppCompatActivity {
     public void sendMessage() {
         Intent intent = getIntent();
         EditText phoneNum = (EditText) findViewById(R.id.phoneNum);
-        String encrypt_sent_MSG = intent.getStringExtra(Encrypt.EXTRA_MESSAGE);
+        EditText sending_message = (EditText) findViewById(R.id.sending_message);
+        // TO DO: This doesnt gather the correct value
+        String encrypt_sent_MSG = intent.getStringExtra(EXTRA_MESSAGE);
 
         Log.i("Send SMS", "");
         String phoneNo = phoneNum.getText().toString();
-        String message = encrypt_sent_MSG;
+        //Just takes the text that was typed into the message and sends it
+        String message = sending_message.getText().toString();
 
         try {
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(phoneNo, null, message, null, null);
+
+            // Trying to use the Encrypted version of the text
+            //smsManager.sendTextMessage(phoneNo, null, encrypt_sent_MSG, null, null);
+
             Toast.makeText(getApplicationContext(), "SMS sent.", Toast.LENGTH_LONG).show();
         }
 
@@ -95,13 +102,7 @@ public class Encrypt extends AppCompatActivity {
         decoded_MSG.setText(decoded);
         view.invalidate();
     }
-    //@Override
-    /*public void setEncryptedMSG(String message) {
-        //super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-        message = intent.getStringExtra(EXTRA_MESSAGE);
-        encrypted_MSG.setText(EXTRA_MESSAGE);
-    }*/
+
     /**
      *
      * @param x is the string to be converted

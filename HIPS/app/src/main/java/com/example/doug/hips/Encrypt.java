@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,16 +17,20 @@ import android.util.Log;
 public class Encrypt extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE = "com.example.HIPS.MESSAGE";
+    public String decoded = "Not Set";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_encrypt);
         //EditText sending_message = (EditText) findViewById(R.id.sending_message);
+        Button sendBtn = (Button) findViewById(R.id.btnSendSMS);
         sendBtn.setOnClickListener(new View.OnClickListener() {
-                                       public void onClick(View view) {
-                                           sendSMSMessage();
-                                       }
+            public void onClick(View view) {
+                sendMessage();
+            }
+        });
+
     }
 
     /** Called when the user clicks the Encrypt button*/
@@ -35,6 +40,7 @@ public class Encrypt extends AppCompatActivity {
         TextView encrypted_MSG = (TextView) findViewById(R.id.encryptedMsg);
         // Stores the data from the input box
         String message = sending_message.getText().toString();
+        decoded = sending_message.getText().toString();
         //converts the message into a pig latin msg
         if (!message.equals("")) {
             message = convert(message);
@@ -56,7 +62,7 @@ public class Encrypt extends AppCompatActivity {
         //setContentView(R.layout.activity_encrypt);
     }
 
-    public void sendMessage(View view) {
+    public void sendMessage() {
         Intent intent = getIntent();
         EditText phoneNum = (EditText) findViewById(R.id.phoneNum);
         String encrypt_sent_MSG = intent.getStringExtra(Encrypt.EXTRA_MESSAGE);
@@ -64,9 +70,6 @@ public class Encrypt extends AppCompatActivity {
         Log.i("Send SMS", "");
         String phoneNo = phoneNum.getText().toString();
         String message = encrypt_sent_MSG;
-
-        //String phoneNo = txtphoneNo.getText().toString();
-        //String message = txtMessage.getText().toString();
 
         try {
             SmsManager smsManager = SmsManager.getDefault();
@@ -88,7 +91,9 @@ public class Encrypt extends AppCompatActivity {
         sms.sendTextMessage(phoneNumber, null, message, pi, null);
     }
     public void decodeMessage(View view) {
-
+        TextView decoded_MSG = (TextView) findViewById(R.id.decodedMsg);
+        decoded_MSG.setText(decoded);
+        view.invalidate();
     }
     //@Override
     /*public void setEncryptedMSG(String message) {

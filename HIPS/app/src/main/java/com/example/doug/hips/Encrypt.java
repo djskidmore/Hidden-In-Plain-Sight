@@ -1,8 +1,10 @@
 package com.example.doug.hips;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.SmsMessage;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,13 +13,16 @@ import android.widget.Toast;
 import android.app.PendingIntent;
 import android.telephony.SmsManager;
 import android.util.Log;
+import com.example.doug.hips.IncomingSms;
 
+import org.w3c.dom.Text;
 
 
 public class Encrypt extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE = "com.example.HIPS.MESSAGE";
     public String decoded = "Not Set";
+    MsgBody msgBody = new MsgBody();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,15 +64,14 @@ public class Encrypt extends AppCompatActivity {
         //startActivity(intent);
         encrypted_MSG.setText(message);
         view.invalidate();
-        //setContentView(R.layout.activity_encrypt);
     }
 
     public void sendMessage() {
         Intent intent = getIntent();
         EditText phoneNum = (EditText) findViewById(R.id.phoneNum);
-        EditText sending_message = (EditText) findViewById(R.id.sending_message);
+        TextView sending_message = (TextView) findViewById(R.id.encryptedMsg);
         // TO DO: This doesnt gather the correct value
-        String encrypt_sent_MSG = intent.getStringExtra(EXTRA_MESSAGE);
+        //String encrypt_sent_MSG = findViewById(EXTRA_MESSAGE);
 
         Log.i("Send SMS", "");
         String phoneNo = phoneNum.getText().toString();
@@ -90,6 +94,9 @@ public class Encrypt extends AppCompatActivity {
         }
 
     }
+
+
+
     private void sendSMS(String phoneNumber, String message)
     {
         PendingIntent pi = PendingIntent.getActivity(this, 0,
@@ -103,11 +110,19 @@ public class Encrypt extends AppCompatActivity {
         view.invalidate();
     }
 
+
+
+    public void getText(View view) {
+        TextView message = (TextView) findViewById(R.id.encryptedMsg);
+        message.setText(msgBody.getMsgBody());
+    }
+
     /**
      *
      * @param x is the string to be converted
      * @return string converted into pig latin
      */
+
     public String convertAlg(String x)
     {
         // Rules:

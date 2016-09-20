@@ -2,6 +2,8 @@ package com.example.doug.hips;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 import android.app.PendingIntent;
 import android.telephony.SmsManager;
 import android.util.Log;
+import android.widget.ImageView;
 import com.example.doug.hips.IncomingSms;
 
 import org.w3c.dom.Text;
@@ -22,7 +25,10 @@ public class Encrypt extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE = "com.example.HIPS.MESSAGE";
     public String decoded = "Not Set";
+    // msgBody is used to pull the message from the receiver
     MsgBody msgBody = new MsgBody();
+    ImageView iv;
+    EditText sending_message;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +41,13 @@ public class Encrypt extends AppCompatActivity {
                 sendMessage();
             }
         });
-
+        iv = (ImageView)findViewById(R.id.imageView);
     }
 
     /** Called when the user clicks the Encrypt button*/
     public void encryptMessage(View view) {
-        Intent intent = new Intent(this, DisplayMessage.class);
-        EditText sending_message = (EditText) findViewById(R.id.sending_message);
+        //Intent intent = new Intent(this, DisplayMessage.class);
+        sending_message = (EditText) findViewById(R.id.sending_message);
         TextView encrypted_MSG = (TextView) findViewById(R.id.encryptedMsg);
         // Stores the data from the input box
         String message = sending_message.getText().toString();
@@ -53,17 +59,32 @@ public class Encrypt extends AppCompatActivity {
         else
         {
             // Put a pop-up here saying
-            // "Are you sure you want to send a blank message?"
-            // Options "Yes" and "Cancel"
-            message = "Error: Message was blank!";
-        }
+        // "Are you sure you want to send a blank message?"
+        // Options "Yes" and "Cancel"
+        message = "Error: Message was blank!";
+    }
 
         //stores the convertd string into Extra Message
         // to be used by any other activity
-        intent.putExtra(EXTRA_MESSAGE, message.toString());
+        //intent.putExtra(EXTRA_MESSAGE, message.toString());
         //startActivity(intent);
         encrypted_MSG.setText(message);
         view.invalidate();
+    }
+
+
+    public void takePicture(View view)
+    {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, 0);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Bitmap bp = (Bitmap) data.getExtras().get("data");
+        iv.setImageBitmap(bp);
     }
 
     public void sendMessage() {
